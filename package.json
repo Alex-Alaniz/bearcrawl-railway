@@ -1,0 +1,16 @@
+{
+  "name": "bearcrawl-railway",
+  "version": "1.0.0",
+  "description": "BearCrawl Railway deployment - OpenClaw Gateway + Spawner Service",
+  "main": "services/session-spawner.ts",
+  "scripts": {
+    "start": "./start.sh"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "tsx": "^4.7.0"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}
