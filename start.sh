@@ -5,15 +5,18 @@ echo "🐻 Starting BearCrawl Railway Services"
 echo "======================================="
 
 # Start OpenClaw Gateway in background
+# Unset DATABASE_URL for gateway — it's for the spawner only, not openclaw
 echo "📡 Starting OpenClaw Gateway on port $PORT..."
-openclaw gateway --port $PORT --bind 0.0.0.0 &
+env -u DATABASE_URL openclaw gateway --port $PORT --bind 0.0.0.0 &
 GATEWAY_PID=$!
 
-# Wait for gateway to be ready (up to 30s)
+# Wait for gateway to be ready (up to 60s — Neon free tier may need wake time)
 echo "⏳ Waiting for gateway to start..."
-for i in $(seq 1 30); do
+READY=0
+for i in $(seq 1 60); do
   if curl -sf http://localhost:$PORT/health > /dev/null 2>&1; then
     echo "✅ Gateway is ready after ${i}s"
+    READY=1
     break
   fi
   if ! kill -0 $GATEWAY_PID 2>/dev/null; then
@@ -22,6 +25,10 @@ for i in $(seq 1 30); do
   fi
   sleep 1
 done
+
+if [ "$READY" = "0" ]; then
+  echo "⚠️ Gateway not responding after 60s, continuing anyway..."
+fi
 
 # Start Spawner Service
 echo "🚀 Starting Spawner Service on port $SESSION_SPAWNER_PORT..."
