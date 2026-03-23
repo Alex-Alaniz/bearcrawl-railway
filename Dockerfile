@@ -4,7 +4,7 @@
 FROM node:22-slim
 
 # Install OpenClaw
-RUN npm install -g openclaw@latest
+RUN npm install -g openclaw@2026.3.13
 
 # Create workspace directories
 RUN mkdir -p /data/.openclaw /data/workspace /app
